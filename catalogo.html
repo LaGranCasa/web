@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Propiedades | La Gran Casa</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #e74c3c;
+            --accent-color: #f39c12;
+            --light-color: #ecf0f1;
+            --dark-color: #34495e;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        body {
+            background-color: #f9f9f9;
+            color: var(--primary-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        header {
+            background: var(--primary-color);
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .logo span {
+            color: var(--accent-color);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 15px;
+        }
+        
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        nav ul li a:hover {
+            color: var(--accent-color);
+        }
+        
+        .catalog-hero {
+            background: linear-gradient(rgba(44, 62, 80, 0.8), rgba(44, 62, 80, 0.8)), url('https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
+            min-height: 250px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            padding: 0 15px;
+        }
+        
+        .catalog-hero h1 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+        
+        .catalog-hero h1 span {
+            color: var(--accent-color);
+        }
+        
+        .catalog-hero p {
+            font-size: 1rem;
+            max-width: 600px;
+            margin: 0 auto 20px;
+        }
+        
+        .search-filters {
+            background-color: white;
+            padding: 20px 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-top: -20px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            border-radius: 5px;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .filter-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .filter-group {
+            flex: 1 1 200px;
+            min-width: 0;
+            margin-bottom: 10px;
+        }
+        
+        .filter-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark-color);
+            font-size: 0.9rem;
+        }
+        
+        .filter-group select, 
+        .filter-group input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .search-btn {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            align-self: center;
+            width: 100%;
+            margin-top: 5px;
+        }
+        
+        .search-btn:hover {
+            background: #d35400;
+            transform: translateY(-3px);
+        }
+        
+        .properties-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 15px;
+        }
+        
+        .properties-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        
+        .property-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+        }
+        
+        .property-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .property-image {
+            height: 200px;
+            width: 100%;
+            object-fit: cover;
+            background-color: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #777;
+            font-size: 0.9rem;
+        }
+        
+        .property-details {
+            padding: 15px;
+        }
+        
+        .property-price {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+            margin-bottom: 8px;
+        }
+        
+        .property-title {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            color: var(--dark-color);
+        }
+        
+        .property-location {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            color: #777;
+            font-size: 0.9rem;
+        }
+        
+        .property-location i {
+            margin-right: 5px;
+            color: var(--accent-color);
+            font-size: 0.9rem;
+        }
+        
+        .property-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            border-top: 1px solid #eee;
+            padding-top: 12px;
+            margin-top: 12px;
+        }
+        
+        .feature {
+            text-align: center;
+            flex: 1 1 60px;
+        }
+        
+        .feature i {
+            color: var(--accent-color);
+            margin-bottom: 3px;
+            font-size: 0.9rem;
+        }
+        
+        .feature span {
+            font-size: 0.8rem;
+            color: #555;
+            display: block;
+        }
+        
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 30px;
+            font-size: 1.1rem;
+            color: var(--dark-color);
+        }
+        
+        .view-more-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .view-more-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        .view-more-btn:hover {
+            background: var(--dark-color);
+            transform: translateY(-3px);
+        }
+        
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            text-align: center;
+            padding: 30px 15px;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            text-align: left;
+        }
+        
+        .footer-column h3 {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: var(--accent-color);
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .footer-column ul li a {
+            color: #ddd;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-column ul li a:hover {
+            color: var(--accent-color);
+        }
+        
+        .footer-column ul li i {
+            margin-right: 8px;
+            width: 15px;
+            text-align: center;
+        }
+        
+        .social-icons {
+            display: flex;
+            gap: 12px;
+            margin-top: 15px;
+        }
+        
+        .social-icons a {
+            color: white;
+            font-size: 1.2rem;
+            transition: color 0.3s;
+        }
+        
+        .social-icons a:hover {
+            color: var(--accent-color);
+        }
+        
+        .copyright {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.8rem;
+        }
+
+        /* Menú hamburguesa para móviles */
+        .menu-toggle {
+            display: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        /* Media Queries para responsividad */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+            
+            nav {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 70%;
+                height: 100vh;
+                background-color: var(--primary-color);
+                transition: all 0.3s ease;
+                padding-top: 70px;
+            }
+            
+            nav.active {
+                right: 0;
+            }
+            
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+                padding: 20px;
+            }
+            
+            nav ul li {
+                margin: 15px 0;
+            }
+            
+            nav ul li a {
+                font-size: 1.1rem;
+            }
+            
+            .catalog-hero h1 {
+                font-size: 1.8rem;
+            }
+            
+            .filter-group {
+                flex: 1 1 100%;
+            }
+            
+            .search-btn {
+                width: auto;
+                margin-top: 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 1.3rem;
+            }
+            
+            .catalog-hero h1 {
+                font-size: 1.5rem;
+            }
+            
+            .catalog-hero p {
+                font-size: 0.9rem;
+            }
+            
+            .properties-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .property-image {
+                height: 180px;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .footer-column ul li {
+                justify-content: center;
+            }
+            
+            .social-icons {
+                justify-content: center;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo">La <span>Gran</span> Casa</div>
+            <div class="menu-toggle" id="mobile-menu">
+                <i class="fas fa-bars"></i>
+            </div>
+            <nav id="main-nav">
+                <ul>
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="catalogo.html" class="active">Catálogo</a></li>
+                    <li><a href="registro.html">Registro</a></li>
+                    <li><a href="quienes-somos.html">Quiénes Somos</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <section class="catalog-hero">
+        <h1>Encuentra tu <span>hogar ideal</span></h1>
+        <p>Explora nuestra selección de propiedades y utiliza los filtros para encontrar exactamente lo que buscas</p>
+    </section>
+    
+    <div class="search-filters">
+        <div class="filter-container">
+            <div class="filter-group">
+                <label for="property-type">Tipo de Propiedad</label>
+                <select id="property-type">
+                    <option value="">Todos los tipos</option>
+                    <option value="casa">Casa</option>
+                    <option value="departamento">Departamento</option>
+                    <option value="terreno">Terreno</option>
+                    <option value="oficina">Oficina</option>
+                    <option value="local">Local Comercial</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="location">Ubicación</label>
+                <select id="location">
+                    <option value="">Todas las ubicaciones</option>
+                    <option value="norte">Zona Norte</option>
+                    <option value="sur">Zona Sur</option>
+                    <option value="este">Zona Este</option>
+                    <option value="oeste">Zona Oeste</option>
+                    <option value="centro">Centro</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="price-range">Rango de Precio</label>
+                <select id="price-range">
+                    <option value="">Todos los precios</option>
+                    <option value="0-500000">Hasta $500,000</option>
+                    <option value="500000-1000000">$500,000 - $1,000,000</option>
+                    <option value="1000000-2000000">$1,000,000 - $2,000,000</option>
+                    <option value="2000000-5000000">$2,000,000 - $5,000,000</option>
+                    <option value="5000000+">Más de $5,000,000</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="bedrooms">Habitaciones</label>
+                <select id="bedrooms">
+                    <option value="">Cualquier cantidad</option>
+                    <option value="1">1+</option>
+                    <option value="2">2+</option>
+                    <option value="3">3+</option>
+                    <option value="4">4+</option>
+                    <option value="5">5+</option>
+                </select>
+            </div>
+            
+            <button class="search-btn" id="searchBtn">Buscar <i class="fas fa-search"></i></button>
+        </div>
+    </div>
+    
+    <div class="properties-container">
+        <div class="properties-grid" id="propertiesGrid">
+            <!-- Las propiedades se cargarán dinámicamente mediante JavaScript -->
+        </div>
+        
+        <div class="view-more-container" id="viewMoreContainer" style="display: none;">
+            <button class="view-more-btn" id="viewMoreBtn">Ver más propiedades <i class="fas fa-chevron-down"></i></button>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>La Gran Casa</h3>
+                <p>Líderes en bienes raíces con más de 15 años de experiencia ayudando a familias a encontrar su hogar ideal.</p>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Enlaces Rápidos</h3>
+                <ul>
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="catalogo.html">Catálogo</a></li>
+                    <li><a href="registro.html">Registro</a></li>
+                    <li><a href="quienes-somos.html">Quiénes Somos</a></li>
+                    <li><a href="#">Blog</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Contacto</h3>
+                <ul>
+                    <li><i class="fas fa-map-marker-alt"></i> Av. Principal #123, Ciudad</li>
+                    <li><i class="fas fa-phone"></i> +1 234 567 890</li>
+                    <li><i class="fas fa-envelope"></i> info@lagrancasa.com</li>
+                    <li><i class="fas fa-clock"></i> Lunes a Viernes: 9am - 6pm</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="copyright">
+            <p>&copy; 2023 La Gran Casa. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Base de datos ampliada con 16 propiedades
+        const properties = [
+            {
+                id: 1,
+                type: "casa",
+                title: "Casa moderna en zona residencial",
+                price: 1250000,
+                location: "norte",
+                bedrooms: 3,
+                bathrooms: 2,
+                size: 180,
+                image: "https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+                features: ["3 Habitaciones", "2 Baños", "180 m²"]
+            },
+            {
+                id: 2,
+                type: "departamento",
+                title: "Departamento luminoso con vista al mar",
+                price: 850000,
+                location: "este",
+                bedrooms: 2,
+                bathrooms: 1,
+                size: 90,
+                image: "https://images.unsplash.com/photo-1493809842364-78817add7ffb?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+                features: ["2 Habitaciones", "1 Baño", "90 m²", "Vista al mar"]
+            },
+            {
+                id: 3,
+                type: "casa",
+                title: "Casa campestre con piscina",
+                price: 1850000,
+                location: "oeste",
+                bedrooms: 4,
+                bathrooms: 3,
+                size: 220,
+                image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+                features: ["4 Habitaciones", "3 Baños", "220 m²", "Piscina"]
+            },
+            {
+                id: 4,
+                type: "terreno",
+                title: "Terreno residencial plano",
+                price: 350000,
+                location: "sur",
+                bedrooms: 0,
+                bathrooms: 0,
+                size: 400,
+                image: "https://images.unsplash.com/photo-1568605114967-8130f3a36994?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+                features: ["400 m²", "Acceso pavimentado"]
+            },
+            {
+                id: 5,
+                type: "departamento",
+                title: "Penthouse de lujo en centro",
+                price: 3200000,
+                location: "centro",
+                bedrooms: 3,
+                bathrooms: 2,
+                size: 200,
+                image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+                features: ["3 Habitaciones", "2 Baños", "200 m²", "Terraza"]
+            },
+            {
+                id: 6,
+                type: "casa",
+                title: "Casa familiar con jardín",
+                price: 1450000,
+                location: "norte",
+                bedrooms: 3,
+                bathrooms: 2,
+                size: 190,
+                image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+                features: ["3 Habitaciones", "2 Baños", "190 m²", "Jardín"]
+            },
+            {
+                id: 7,
+                type: "oficina",
+                title: "Oficina en zona comercial",
+                price: 950000,
+                location: "centro",
+                bedrooms: 0,
+                bathrooms: 1,
+                size: 80,
+                image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+                features: ["80 m²", "1 Baño", "Zona comercial"]
+            },
+            {
+                id: 8,
+                type: "local",
+                title: "Local comercial en avenida principal",
+                price: 1200000,
+                location: "centro",
+                bedrooms: 0,
+                bathrooms: 1,
+                size: 120,
+                image: "https://images.unsplash.com/photo-1605152276897-4f618f831968?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+                features: ["120 m²", "1 Baño", "Alta visibilidad"]
+            },
+            {
+                id: 9,
+                type: "casa",
+                title: "Casa minimalista con diseño contemporáneo",
+                price: 1650000,
+                location: "norte",
+                bedrooms: 3,
+                bathrooms: 2,
+                size: 195,
+                image: "https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+                features: ["3 Habitaciones", "2 Baños", "195 m²", "Terraza"]
+            },
+            {
+                id: 10,
+                type: "departamento",
+                title: "Departamento acogedor para solteros",
+                price: 650000,
+                location: "este",
+                bedrooms: 1,
+                bathrooms: 1,
+                size: 65,
+                image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+                features: ["1 Habitación", "1 Baño", "65 m²", "Amueblado"]
+            },
+            {
+                id: 11,
+                type: "terreno",
+                title: "Terreno con vista panorámica",
+                price: 420000,
+                location: "oeste",
+                bedrooms: 0,
+                bathrooms: 0,
+                size: 350,
+                image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+                features: ["350 m²", "Vista panorámica", "Acceso pavimentado"]
+            },
+            {
+                id: 12,
+                type: "casa",
+                title: "Casa tradicional con amplio jardín",
+                price: 2100000,
+                location: "sur",
+                bedrooms: 4,
+                bathrooms: 3,
+                size: 240,
+                image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+                features: ["4 Habitaciones", "3 Baños", "240 m²", "Jardín amplio"]
+            },
+            {
+                id: 13,
+                type: "departamento",
+                title: "Departamento estudio en zona céntrica",
+                price: 480000,
+                location: "centro",
+                bedrooms: 0,
+                bathrooms: 1,
+                size: 45,
+                image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+                features: ["Estudio", "1 Baño", "45 m²", "Zona céntrica"]
+            },
+            {
+                id: 14,
+                type: "local",
+                title: "Local comercial en zona de alto tráfico",
+                price: 1850000,
+                location: "centro",
+                bedrooms: 0,
+                bathrooms: 1,
+                size: 150,
+                image: "https://images.unsplash.com/photo-1605152276897-4f618f831968?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+                features: ["150 m²", "1 Baño", "Alto tráfico peatonal"]
+            },
+            {
+                id: 15,
+                type: "oficina",
+                title: "Oficinas ejecutivas con recepción",
+                price: 3200000,
+                location: "norte",
+                bedrooms: 0,
+                bathrooms: 2,
+                size: 180,
+                image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+                features: ["180 m²", "2 Baños", "Área de recepción"]
+            },
+            {
+                id: 16,
+                type: "casa",
+                title: "Casa de playa con acceso privado",
+                price: 2750000,
+                location: "este",
+                bedrooms: 3,
+                bathrooms: 2,
+                size: 210,
+                image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+                features: ["3 Habitaciones", "2 Baños", "210 m²", "Acceso a playa"]
+            }
+        ];
+
+        // Variables para el control de carga
+        let currentOffset = 0;
+        const itemsPerLoad = 6;
+        let currentFilteredProperties = [];
+
+        // Función para formatear el precio como moneda
+        function formatPrice(price) {
+            return new Intl.NumberFormat('es-MX', { 
+                style: 'currency', 
+                currency: 'MXN',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(price);
+        }
+
+        // Función para renderizar propiedades (modificada)
+        function renderProperties(propertiesToRender, initialLoad = false) {
+            const container = document.getElementById('propertiesGrid');
+            
+            if (initialLoad) {
+                container.innerHTML = '';
+                currentOffset = 0;
+            }
+
+            if (propertiesToRender.length === 0) {
+                container.innerHTML = '<div class="no-results">No se encontraron propiedades que coincidan con tus criterios de búsqueda.</div>';
+                document.getElementById('viewMoreContainer').style.display = 'none';
+                return;
+            }
+
+            // Mostrar propiedades según el offset actual
+            const propertiesToShow = propertiesToRender.slice(currentOffset, currentOffset + itemsPerLoad);
+            
+            propertiesToShow.forEach(property => {
+                const propertyCard = document.createElement('div');
+                propertyCard.className = 'property-card';
+                
+                // Manejo de imágenes faltantes
+                const imageContent = property.image 
+                    ? `<img src="${property.image}" alt="${property.title}" class="property-image">`
+                    : `<div class="property-image">Imagen no disponible</div>`;
+                
+                propertyCard.innerHTML = `
+                    ${imageContent}
+                    <div class="property-details">
+                        <div class="property-price">${formatPrice(property.price)}</div>
+                        <h3 class="property-title">${property.title}</h3>
+                        <div class="property-location">
+                            <i class="fas fa-map-marker-alt"></i> ${getLocationName(property.location)}, Ciudad
+                        </div>
+                        <div class="property-features">
+                            ${property.features.map(feature => {
+                                let icon = '';
+                                if (feature.includes('Habitaciones')) icon = 'fa-bed';
+                                else if (feature.includes('Baños')) icon = 'fa-bath';
+                                else if (feature.includes('m²')) icon = 'fa-vector-square';
+                                else if (feature.includes('Piscina')) icon = 'fa-swimming-pool';
+                                else if (feature.includes('Jardín')) icon = 'fa-tree';
+                                else if (feature.includes('Terraza')) icon = 'fa-umbrella-beach';
+                                else if (feature.includes('Vista')) icon = 'fa-binoculars';
+                                else if (feature.includes('Acceso')) icon = 'fa-road';
+                                
+                                return `
+                                    <div class="feature">
+                                        <i class="fas ${icon}"></i>
+                                        <span>${feature}</span>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+                container.appendChild(propertyCard);
+            });
+
+            // Actualizar el offset
+            currentOffset += propertiesToShow.length;
+            
+            // Mostrar/ocultar botón "Ver más"
+            const remainingProperties = propertiesToRender.length - currentOffset;
+            document.getElementById('viewMoreContainer').style.display = 
+                remainingProperties > 0 ? 'block' : 'none';
+        }
+
+        // Función para obtener el nombre de la ubicación
+        function getLocationName(locationKey) {
+            const locations = {
+                'norte': 'Zona Norte',
+                'sur': 'Zona Sur',
+                'este': 'Zona Este',
+                'oeste': 'Zona Oeste',
+                'centro': 'Centro'
+            };
+            return locations[locationKey] || '';
+        }
+
+        // Función para filtrar propiedades
+        function filterProperties() {
+            const typeFilter = document.getElementById('property-type').value;
+            const locationFilter = document.getElementById('location').value;
+            const priceFilter = document.getElementById('price-range').value;
+            const bedroomsFilter = document.getElementById('bedrooms').value;
+
+            currentFilteredProperties = properties.filter(property => {
+                // Filtrar por tipo
+                if (typeFilter && property.type !== typeFilter) return false;
+                
+                // Filtrar por ubicación
+                if (locationFilter && property.location !== locationFilter) return false;
+                
+                // Filtrar por habitaciones
+                if (bedroomsFilter && property.bedrooms < parseInt(bedroomsFilter)) return false;
+                
+                // Filtrar por precio
+                if (priceFilter) {
+                    const [min, max] = priceFilter.split('-').map(part => {
+                        if (part.endsWith('+')) {
+                            return parseInt(part.replace('+', '')) + 1;
+                        }
+                        return parseInt(part) || 0;
+                    });
+                    
+                    if (min && property.price < min) return false;
+                    if (max && property.price > max) return false;
+                }
+                
+                return true;
+            });
+
+            renderProperties(currentFilteredProperties, true);
+        }
+
+        // Evento para el botón de búsqueda
+        document.getElementById('searchBtn').addEventListener('click', filterProperties);
+
+        // Evento para el botón "Ver más"
+        document.getElementById('viewMoreBtn').addEventListener('click', function() {
+            renderProperties(currentFilteredProperties);
+        });
+
+        // Menú hamburguesa para móviles
+        const menuToggle = document.getElementById('mobile-menu');
+        const mainNav = document.getElementById('main-nav');
+        
+        menuToggle.addEventListener('click', function() {
+            mainNav.classList.toggle('active');
+            
+            // Cambiar icono de hamburguesa a X y viceversa
+            const icon = menuToggle.querySelector('i');
+            if (mainNav.classList.contains('active')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+        
+        // Cerrar menú al hacer clic en un enlace (para móviles)
+        const navLinks = document.querySelectorAll('#main-nav a');
+        navLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth <= 768) {
+                    mainNav.classList.remove('active');
+                    const icon = menuToggle.querySelector('i');
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
+            });
+        });
+
+        // Cargar propiedades al iniciar
+        document.addEventListener('DOMContentLoaded', () => {
+            currentFilteredProperties = [...properties];
+            renderProperties(currentFilteredProperties, true);
+        });
+    </script>
+</body>
+</html>
